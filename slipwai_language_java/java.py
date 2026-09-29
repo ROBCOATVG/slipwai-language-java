@@ -12,6 +12,7 @@ siblings' own, and `assets/languages/java/build/` is where their shared *content
 """
 from __future__ import annotations
 
+from ... import registry as protocol
 from ...naming import java_package_segment
 from ...services import App
 from ...tooling import service_qualifier
@@ -69,3 +70,8 @@ for app in {apps}; do
   )
 done
 """
+
+
+# The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
+# backend beside this in `java_quarkus.py` and `java_spring.py`.
+LANGUAGE = protocol.Language(families=(protocol.Family("java"),))
