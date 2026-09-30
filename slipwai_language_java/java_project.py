@@ -106,6 +106,9 @@ def maven_paths(project_name: str, service: str) -> dict[str, str]:
 
 
 FAMILY = {
+    protocol.PROCFILE: None,
+    protocol.PIN_FILES: {},
+    protocol.MAKEFILE_VARIABLES: None,
     # One entry point rather than several binaries: everything a Maven toolchain does — compile, test, the three
     # analysers, dev mode — is a goal, so approving `./mvnw` is approving the toolchain. The wrapper and not
     # `mvn`: that is the only spelling either Java backend's gates use, which is also why both share this.
