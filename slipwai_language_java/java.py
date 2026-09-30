@@ -19,6 +19,7 @@ from ...tooling import service_qualifier
 from ..ci_workflows import dependency_paths
 from ..flags import FlagReader
 from . import java_toolchain as toolchain
+from .java_project import FAMILY as PROJECT
 from .java_prune_rows import PRUNE_ROWS
 
 # The package every committed asset is written under, and the artifact id in the committed pom. Both are
@@ -121,7 +122,7 @@ SHARED = (
 # backend beside this in `java_quarkus.py` and `java_spring.py`. Maven's toolchain answers, the CI toolchain
 # step, the flag reader, the shared-code paragraph and the pruner's rows are the family's, and both frameworks
 # inherit them.
-LANGUAGE = protocol.Language(families=(protocol.Family("java", toolchain.FAMILY | {
+LANGUAGE = protocol.Language(families=(protocol.Family("java", toolchain.FAMILY | PROJECT | {
     protocol.CI_TOOLCHAIN_SETUP: ci_toolchain_setup,
     protocol.FLAG_READER: READER,
     protocol.SHARED_CODE: SHARED,
