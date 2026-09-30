@@ -92,8 +92,8 @@ JAVA_QUARKUS_MUTATION_PLACEHOLDER = (
 
 
 # What a Java project still owes for each identity provider, per feature. The family's, so both frameworks say it
-# (D34: the paragraph names `quarkus-oidc` to a Spring project too, and is carried here byte for byte until a
-# slice of its own gives `java-spring` its own answer).
+# (D34: the `keycloak` paragraph names `quarkus-oidc`, so `java-spring` answers its own, in `java_spring.py`,
+# and takes this `users-keycloak` one from here).
 IDENTITY_OUTSTANDING = {
     "keycloak": """**The protocol flow is `quarkus-oidc`'s**, not this project's: the Authorization Code flow with
 PKCE, the JWKS retrieval and the full token validation all come from the extension, and none of it should
