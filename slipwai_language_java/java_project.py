@@ -8,8 +8,11 @@ PIT works under Spring Boot's test harness and times out under Quarkus's, so one
 target and the other's explains why there is none; a family note would print the wrong one for one of them."""
 from __future__ import annotations
 
+from typing import Any
+
 from ... import registry as protocol
 from ...naming import java_package_segment
+from ..renovate import RenovateRules
 
 # What `make mutation` does on the Quarkus backend, and why it is not PIT already wired up.
 #
@@ -105,10 +108,14 @@ def maven_paths(project_name: str, service: str) -> dict[str, str]:
     }
 
 
-FAMILY = {
+FAMILY: dict[protocol.Member[Any], object] = {
     protocol.PROCFILE: None,
     protocol.PIN_FILES: {},
     protocol.MAKEFILE_VARIABLES: None,
+    protocol.RENOVATE_RULES: RenovateRules(
+        ("maven",), ("maven", ("maven",), "the Maven builds, including the plugins the gate's analysers are"), None
+    ),
+    protocol.OPT_IN_FLAG_TRANSPORTS: frozenset(),
     # One entry point rather than several binaries: everything a Maven toolchain does — compile, test, the three
     # analysers, dev mode — is a goal, so approving `./mvnw` is approving the toolchain. The wrapper and not
     # `mvn`: that is the only spelling either Java backend's gates use, which is also why both share this.
@@ -116,7 +123,7 @@ FAMILY = {
     protocol.EVENT_MODEL_PATHS: maven_paths,
     protocol.MUTATION_TOOL: "PIT (pitest)",
 }
-QUARKUS = {
+QUARKUS: dict[protocol.Member[Any], object] = {
     # `target/` is every artifact Maven writes — classes, the Quarkus build output, the analysers'
     # reports. `.flattened-pom.xml` is what the Quarkus build leaves behind when it resolves the
     # platform BOM, and it is derived from the pom rather than edited beside it.
@@ -127,7 +134,7 @@ QUARKUS = {
     ),
     protocol.MUTATION_NOTE: JAVA_QUARKUS_MUTATION_NOTE,
 }
-SPRING = {
+SPRING: dict[protocol.Member[Any], object] = {
     # `target/` for the same reason, and nothing else: Spring Boot's plugin writes the repackaged jar
     # and the `build-info` inside it rather than beside the pom, so there is no second file to ignore.
     protocol.GITIGNORE: "target/\n",
