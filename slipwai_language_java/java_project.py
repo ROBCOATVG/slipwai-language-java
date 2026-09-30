@@ -91,6 +91,23 @@ JAVA_QUARKUS_MUTATION_PLACEHOLDER = (
 )
 
 
+# What a Java project still owes for each identity provider, per feature. The family's, so both frameworks say it
+# (D34: the paragraph names `quarkus-oidc` to a Spring project too, and is carried here byte for byte until a
+# slice of its own gives `java-spring` its own answer).
+IDENTITY_OUTSTANDING = {
+    "keycloak": """**The protocol flow is `quarkus-oidc`'s**, not this project's: the Authorization Code flow with
+PKCE, the JWKS retrieval and the full token validation all come from the extension, and none of it should
+ever be written here. It is configured in `apps/service/src/main/resources/application.properties` and
+deliberately left disabled — enabled, the service refuses to boot whenever Keycloak is not up, which is a
+hard dependency bought for nothing until a route needs a principal. What this project still owns is the
+group-to-role mapping in `KeycloakRoles`, and naming the roles it maps.""",
+    "users-keycloak": """**Token validation is the framework's**, configured for the `customers` realm in
+`apps/service/src/main/resources/application.properties` and deliberately left disabled until a route needs a
+customer. What this project owns is `CustomerIdentity`: a validated token becomes a customer only if its issuer
+is exactly this realm's — a staff token is a valid JWT too — and its email is verified.""",
+}
+
+
 def maven_paths(project_name: str, service: str) -> dict[str, str]:
     """Maven's source roots rather than a framework's, which is why both Java backends share them. Java drops the
     separators rather than replacing them, the way the ecosystem does with a hyphenated artifact name, and a segment
@@ -116,6 +133,7 @@ FAMILY: dict[protocol.Member[Any], object] = {
         ("maven",), ("maven", ("maven",), "the Maven builds, including the plugins the gate's analysers are"), None
     ),
     protocol.OPT_IN_FLAG_TRANSPORTS: frozenset(),
+    protocol.IDENTITY_OUTSTANDING: IDENTITY_OUTSTANDING,
     # One entry point rather than several binaries: everything a Maven toolchain does — compile, test, the three
     # analysers, dev mode — is a goal, so approving `./mvnw` is approving the toolchain. The wrapper and not
     # `mvn`: that is the only spelling either Java backend's gates use, which is also why both share this.
