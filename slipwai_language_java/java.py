@@ -86,6 +86,18 @@ READER = FlagReader(
 )
 
 
+# What "code shared between services" is in this family, and what sharing it would ask of the build: the
+# architecture page's paragraph. The family's answer rather than a backend's, because the unit of sharing is
+# the build tool's rather than the framework's — and this is where the question of an aggregator
+# pom is answered, so it is answered where a reader of the generated project will look for it.
+SHARED = (
+    "a Maven module under `packages/<name>` that each service's pom depends on. Every service is a Maven "
+    "project of its own today, with `scripts/verify` and the Makefile as the loop that builds them; a "
+    "shared module the services have to build first is what would make an aggregator pom worth having, "
+    "and that is the day to add one"
+)
+
+
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
 # backend beside this in `java_quarkus.py` and `java_spring.py`.
-LANGUAGE = protocol.Language(families=(protocol.Family("java", {protocol.FLAG_READER: READER}),))
+LANGUAGE = protocol.Language(families=(protocol.Family("java", {protocol.FLAG_READER: READER, protocol.SHARED_CODE: SHARED}),))
