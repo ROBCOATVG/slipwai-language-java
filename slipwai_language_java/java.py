@@ -16,6 +16,7 @@ from ... import registry as protocol
 from ...naming import java_package_segment
 from ...services import App
 from ...tooling import service_qualifier
+from ..ci_workflows import dependency_paths
 
 # The package every committed asset is written under, and the artifact id in the committed pom. Both are
 # rewritten to this project's own names below — every Java file names its package and imports its siblings
@@ -72,6 +73,25 @@ done
 """
 
 
+def ci_toolchain_setup(services: list[App]) -> str:
+    """One `actions/setup-java` for every Java service, whichever framework owns its startup.
+
+    Which JDK to install and where the dependency cache lives are the toolchain's answers rather than a
+    framework's, so both Java backends inherit this one. Temurin 25 is the current LTS, the floor Quarkus
+    3.33's AOT cache generation needs and well inside Spring Boot 4.1's 17-to-26 range. `cache: maven` keys
+    on the poms, so a run that changes no dependency downloads nothing; it also covers the Maven the wrapper
+    fetches, which `setup-java@v5` caches under a second key derived from `maven-wrapper.properties` alone.
+    """
+    return (
+        "      - uses: actions/setup-java@v5\n        with:\n          distribution: temurin\n"
+        "          java-version: '25'\n          cache: maven\n"
+        f"          cache-dependency-path: {dependency_paths([f'{s.path}/pom.xml' for s in services])}\n"
+    )
+
+
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
-# backend beside this in `java_quarkus.py` and `java_spring.py`.
-LANGUAGE = protocol.Language(families=(protocol.Family("java"),))
+# backend beside this in `java_quarkus.py` and `java_spring.py`. The CI toolchain step is the family's, and
+# both frameworks inherit it.
+LANGUAGE = protocol.Language(families=(protocol.Family("java", {
+    protocol.CI_TOOLCHAIN_SETUP: ci_toolchain_setup,
+}),))
