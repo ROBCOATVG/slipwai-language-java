@@ -16,6 +16,7 @@ from ... import registry as protocol
 from ...naming import java_package_segment
 from ...services import App
 from ...tooling import service_qualifier
+from ..flags import FlagReader
 
 # The package every committed asset is written under, and the artifact id in the committed pom. Both are
 # rewritten to this project's own names below — every Java file names its package and imports its siblings
@@ -74,6 +75,17 @@ done
 """
 
 
+# The flag reader, once for both backends: it reads one committed tree, `java/flags`, for the reason they share
+# `java/build/` and every `../java/` source in their layouts. The class names no framework type — no
+# `@ConfigProperty`, no `@Value` — so a second copy would have nothing to say differently and could only drift.
+READER = FlagReader(
+    tree="java/flags",
+    source="src/main/java/com/example/deliverystarter/flags/Flags.java",
+    tests="src/test/java/com/example/deliverystarter/flags/FlagsTest.java",
+    call='Flags.enabled("checkout-v2")',
+)
+
+
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
 # backend beside this in `java_quarkus.py` and `java_spring.py`.
-LANGUAGE = protocol.Language(families=(protocol.Family("java"),))
+LANGUAGE = protocol.Language(families=(protocol.Family("java", {protocol.FLAG_READER: READER}),))
