@@ -17,6 +17,7 @@ from ...naming import java_package_segment
 from ...services import App
 from ...tooling import service_qualifier
 from ..ci_workflows import dependency_paths
+from ..flags import FlagReader
 from . import java_toolchain as toolchain
 
 # The package every committed asset is written under, and the artifact id in the committed pom. Both are
@@ -24,6 +25,8 @@ from . import java_toolchain as toolchain
 # by it, so rewriting only the pom would produce a project that does not compile.
 TEMPLATE_SEGMENT = "deliverystarter"
 TEMPLATE_ARTIFACT = "delivery-starter-service"
+#: Where the two ports sit in Maven's layout: under the application layer, which owns them.
+JAVA_PORTS = "src/main/java/com/example/deliverystarter/application/ports"
 
 
 def rename_java_sources(project_name: str, service: App, files: dict[str, str]) -> dict[str, str]:
@@ -90,9 +93,34 @@ def ci_toolchain_setup(services: list[App]) -> str:
     )
 
 
+# The flag reader, once for both backends: it reads one committed tree, `java/flags`, for the reason they share
+# `java/build/` and every `../java/` source in their layouts. The class names no framework type — no
+# `@ConfigProperty`, no `@Value` — so a second copy would have nothing to say differently and could only drift.
+READER = FlagReader(
+    tree="java/flags",
+    source="src/main/java/com/example/deliverystarter/flags/Flags.java",
+    tests="src/test/java/com/example/deliverystarter/flags/FlagsTest.java",
+    call='Flags.enabled("checkout-v2")',
+)
+
+
+# What "code shared between services" is in this family, and what sharing it would ask of the build: the
+# architecture page's paragraph. The family's answer rather than a backend's, because the unit of sharing is
+# the build tool's rather than the framework's — and this is where the question of an aggregator
+# pom is answered, so it is answered where a reader of the generated project will look for it.
+SHARED = (
+    "a Maven module under `packages/<name>` that each service's pom depends on. Every service is a Maven "
+    "project of its own today, with `scripts/verify` and the Makefile as the loop that builds them; a "
+    "shared module the services have to build first is what would make an aggregator pom worth having, "
+    "and that is the day to add one"
+)
+
+
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
-# backend beside this in `java_quarkus.py` and `java_spring.py`. Maven's toolchain answers and the CI toolchain
-# step are the family's, and both frameworks inherit them (`java_toolchain.py`).
+# backend beside this in `java_quarkus.py` and `java_spring.py`. Maven's toolchain answers, the CI toolchain
+# step, the flag reader and the shared-code paragraph are the family's, and both frameworks inherit them.
 LANGUAGE = protocol.Language(families=(protocol.Family("java", toolchain.FAMILY | {
     protocol.CI_TOOLCHAIN_SETUP: ci_toolchain_setup,
+    protocol.FLAG_READER: READER,
+    protocol.SHARED_CODE: SHARED,
 }),))
