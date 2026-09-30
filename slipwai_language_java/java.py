@@ -16,6 +16,7 @@ from ... import registry as protocol
 from ...naming import java_package_segment
 from ...services import App
 from ...tooling import service_qualifier
+from . import java_toolchain as toolchain
 
 # The package every committed asset is written under, and the artifact id in the committed pom. Both are
 # rewritten to this project's own names below — every Java file names its package and imports its siblings
@@ -73,5 +74,6 @@ done
 
 
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
-# backend beside this in `java_quarkus.py` and `java_spring.py`.
-LANGUAGE = protocol.Language(families=(protocol.Family("java"),))
+# backend beside this in `java_quarkus.py` and `java_spring.py`. Maven's toolchain answers are the family's, and
+# both frameworks inherit them (`java_toolchain.py`).
+LANGUAGE = protocol.Language(families=(protocol.Family("java", toolchain.FAMILY),))
