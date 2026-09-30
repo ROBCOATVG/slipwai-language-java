@@ -22,6 +22,8 @@ from ...tooling import service_qualifier
 # by it, so rewriting only the pom would produce a project that does not compile.
 TEMPLATE_SEGMENT = "deliverystarter"
 TEMPLATE_ARTIFACT = "delivery-starter-service"
+#: Where the two ports sit in Maven's layout: under the application layer, which owns them.
+JAVA_PORTS = "src/main/java/com/example/deliverystarter/application/ports"
 
 
 def rename_java_sources(project_name: str, service: App, files: dict[str, str]) -> dict[str, str]:
