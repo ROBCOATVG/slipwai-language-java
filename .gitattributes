@@ -1,0 +1,6 @@
+# The Maven wrapper is the one pair of files here whose line endings are load-bearing, and it is written into every
+# generated Java project byte for byte: `mvnw` is a POSIX shell script, which CRLF makes unrunnable, and `mvnw.cmd`
+# is a batch/PowerShell polyglot that re-reads itself with `Get-Content -Raw`, so LF is not safe there either. Git
+# must not renormalise either, whatever `core.autocrlf` a contributor's Git is set to.
+assets/languages/java/build/mvnw text eol=lf
+assets/languages/java/build/mvnw.cmd text eol=crlf

@@ -1,0 +1,8 @@
+{
+  "name": "java",
+  "core": ">=9.0,<10",
+  "order": 40,
+  "family": "java",
+  "backends": {},
+  "default_framework": "quarkus"
+}
