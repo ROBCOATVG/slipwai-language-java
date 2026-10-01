@@ -1,8 +1,7 @@
 """Java's toolchain, which is Maven's: how a service of either framework installs, checks and caches itself.
 
 These are the `java` family's answers to the toolchain members of the backend protocol
-(`src/slipwai/registry.py`, whose shapes are fixed in
-`specs/001-slipwai-2-language-addons/contracts/backend-protocol.md`). Every answer in `FAMILY` is the build
+(`slipwai.registry`, whose shapes are fixed by the backend-protocol contract). Every answer in `FAMILY` is the build
 tool's rather than a framework's — the same wrapper resolves, the same goals run the gate, the same image
 carries it — so it is written once here and both `java-quarkus` and `java-spring` inherit it. What the two
 frameworks genuinely disagree about, how a service starts and what `make mutation` runs, each answers on its
@@ -14,9 +13,9 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
-from ... import registry as protocol
-from ...backends import APP, Tooling
-from ...tooling import for_app
+from slipwai import registry as protocol
+from slipwai.backends import APP, Tooling
+from slipwai.tooling import for_app
 
 # Every Maven invocation this factory writes, spelled once. `-B` because a recipe is never at a terminal
 # and Maven's progress animation is noise in a CI log; `-q` because a passing gate should say nothing.

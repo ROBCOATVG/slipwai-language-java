@@ -9,18 +9,29 @@ What belongs here is what the *language* decides rather than the framework: Mave
 project name becomes a package segment, and the fact that every Java file names its own package. What does
 not is anything a framework has an opinion about — the pom, the properties, the adapters. Those are the
 siblings' own, and `assets/languages/java/build/` is where their shared *content* lives.
+
+This is the `java` language package: a family with no backend of its own. Core loads it from the language
+directory; the frameworks (`java-quarkus`, `java-spring`) are packages of their own that require it, import what they
+share from it, and read its files after their own. Its assets are the `assets/` beside this package.
 """
 from __future__ import annotations
 
-from ... import registry as protocol
-from ...naming import java_package_segment
-from ...services import App
-from ...tooling import service_qualifier
-from ..ci_workflows import dependency_paths
-from ..flags import FlagReader
+from pathlib import Path
+
+from slipwai import registry as protocol
+from slipwai.naming import java_package_segment
+from slipwai.project.ci_workflows import dependency_paths
+from slipwai.project.flags import FlagReader
+from slipwai.services import App
+from slipwai.tooling import service_qualifier
+
 from . import java_toolchain as toolchain
 from .java_project import FAMILY as PROJECT
 from .java_prune_rows import PRUNE_ROWS
+
+# This package's own assets, the layout core's readers use for every language: `languages/java/…` and
+# `backing-services/{java,sql}/`. The frameworks read `languages/java/build/` through this name.
+ASSETS = Path(__file__).resolve().parents[1] / "assets"
 
 # The package every committed asset is written under, and the artifact id in the committed pom. Both are
 # rewritten to this project's own names below — every Java file names its package and imports its siblings
@@ -133,7 +144,7 @@ SHARED = (
 
 
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
-# backend beside this in `java_quarkus.py` and `java_spring.py`. Maven's toolchain answers, the CI toolchain
+# backend beside this in its own package (`java-quarkus`, `java-spring`). Maven's toolchain answers, the CI toolchain
 # step, the flag reader, the shared-code paragraph, the pruner's rows, the rename and the root `scripts/verify`
 # are the family's, and both frameworks inherit them (Story 1 scenario 4).
 LANGUAGE = protocol.Language(families=(protocol.Family("java", toolchain.FAMILY | PROJECT | {
