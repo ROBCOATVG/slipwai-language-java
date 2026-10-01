@@ -9,9 +9,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from ... import registry as protocol
-from ...naming import java_package_segment
-from ..renovate import RenovateRules
+from slipwai import registry as protocol
+from slipwai.naming import java_package_segment
+from slipwai.project.renovate import RenovateRules
 
 # What a Java project still owes for each identity provider, per feature. The family's, so both frameworks say it
 # (D34: the `keycloak` paragraph names `quarkus-oidc`, so `java-spring` answers its own, in its own package,
