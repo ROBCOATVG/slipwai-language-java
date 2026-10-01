@@ -95,6 +95,20 @@ def ci_toolchain_setup(services: list[App]) -> str:
     )
 
 
+def repository_files(
+    project_name: str, files: dict[str, str], services: list[App], verify: str
+) -> dict[str, str]:
+    """`scripts/verify` above the services, and nothing else.
+
+    There is no aggregator pom above them: each service is a Maven project of its own, and one pom that
+    exists only to list them is a file to keep in step for nothing — `scripts/verify` and the Makefile are
+    the loop. Compare `go.work`, which Go genuinely requires. The family's, because both frameworks wrote it the
+    same way: a framework that wanted an aggregator would answer its own.
+    """
+    files[verify] = verify_script(services)
+    return files
+
+
 # The flag reader, once for both backends: it reads one committed tree, `java/flags`, for the reason they share
 # `java/build/` and every `../java/` source in their layouts. The class names no framework type — no
 # `@ConfigProperty`, no `@Value` — so a second copy would have nothing to say differently and could only drift.
@@ -120,9 +134,11 @@ SHARED = (
 
 # The family only: Maven, the source layout and the package rule are shared, and each framework declares its own
 # backend beside this in `java_quarkus.py` and `java_spring.py`. Maven's toolchain answers, the CI toolchain
-# step, the flag reader, the shared-code paragraph and the pruner's rows are the family's, and both frameworks
-# inherit them.
+# step, the flag reader, the shared-code paragraph, the pruner's rows, the rename and the root `scripts/verify`
+# are the family's, and both frameworks inherit them (Story 1 scenario 4).
 LANGUAGE = protocol.Language(families=(protocol.Family("java", toolchain.FAMILY | PROJECT | {
+    protocol.NAME_SERVICE: rename_java_sources,
+    protocol.REPOSITORY_FILES: repository_files,
     protocol.CI_TOOLCHAIN_SETUP: ci_toolchain_setup,
     protocol.FLAG_READER: READER,
     protocol.SHARED_CODE: SHARED,
