@@ -32,6 +32,10 @@ jobs:
     with:
       package: java
       kind: language
+      # The java family is proved all together or not at all: the family's own `prune_rows` name
+      # features from both frameworks, so loading any one of the three needs all three.
+      # `requires` gives the family; this names the rest.
+      beside: 'java-spring java-quarkus'
       matrix: ${{ inputs.matrix || false }}
       # Where a tag publishes to. Empty publishes nowhere, which is right for a fork.
       channel: 'ROBCOATVG/slipwai-index'
