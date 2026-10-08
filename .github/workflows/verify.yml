@@ -38,7 +38,7 @@ jobs:
       # The java family is proved all together or not at all: the family's own `prune_rows` name
       # features from both frameworks, so loading any one of the three needs all three.
       # `requires` gives the family; this names the rest.
-      beside: 'java-spring java-quarkus'
+      beside: 'java-spring java-quarkus typescript'
       # **The two-gate split, for a package.** A pull request gets conformance, which is the fast half
       # and the one an author runs over and over. `main` and a tag get the matrix as well — every
       # generated variant of every backend, each held to its own native gate — because that is the
