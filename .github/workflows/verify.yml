@@ -32,6 +32,9 @@ jobs:
     with:
       package: java
       kind: language
+      # What the runner needs before the matrix can build a generated project with this
+      # language. Conformance needs none of it.
+      toolchains: 'java'
       # The java family is proved all together or not at all: the family's own `prune_rows` name
       # features from both frameworks, so loading any one of the three needs all three.
       # `requires` gives the family; this names the rest.
