@@ -40,6 +40,10 @@ def maven_paths(project_name: str, service: str) -> dict[str, str]:
         "events": f"{documented_java_path}/domain/<context>/Events.java",
         "domain": f"{documented_java_path}/domain/<context>/Decider.java",
         "usecase": f"{documented_java_path}/application/<context>/<UseCase>.java",
+        # Read only by a service on the state-stored rung: the port it loads and saves current state through,
+        # where an event-sourced service has the event store. Answered whichever rung a project is on, because
+        # the rung is the project maker's answer and not the language's.
+        "repository": f"{documented_java_path}/application/ports/state/Repository.java",
         "test": (
             f"{service}/src/test/java/com/example/{documented_java_segment}"
             "/domain/<context>/<Slice>Test.java (JUnit 5)"

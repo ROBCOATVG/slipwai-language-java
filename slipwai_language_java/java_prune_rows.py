@@ -20,12 +20,18 @@ PRUNE_ROWS = {
     "marked_files": ("pom.xml", "src/main/resources/application.properties"),
     "owned_files": {
         "sqlite": (
+            # The state rung's adapter beside the event rung's: a project has one or the other, and a prune of
+            # a path it does not have is a no-op.
+            "src/main/java/com/example/*/adapters/driven/repositorysqlite",
+            "src/test/java/com/example/*/adapters/driven/repositorysqlite",
             "src/main/java/com/example/*/adapters/driven/eventstoresqlite",
             "src/test/java/com/example/*/adapters/driven/eventstoresqlite",
             "src/main/java/com/example/*/adapters/driven/checkpointstoresqlite",
             "src/test/java/com/example/*/adapters/driven/checkpointstoresqlite",
         ),
         "postgres": (
+            "src/main/java/com/example/*/adapters/driven/repositorypostgres",
+            "src/test/java/com/example/*/adapters/driven/repositorypostgres",
             "src/main/java/com/example/*/adapters/driven/eventstorepostgres",
             "src/test/java/com/example/*/adapters/driven/eventstorepostgres",
             "src/main/java/com/example/*/adapters/driven/checkpointstorepostgres",

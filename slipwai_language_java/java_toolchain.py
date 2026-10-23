@@ -135,8 +135,11 @@ def maven_dev_command(goal: str) -> Callable[[str, str, str], str]:
 
 # Where a Maven project's driven adapters live, for prose that has to point at them: `src/main/java` is the
 # build tool's convention and neither framework moves it.
-def event_store_directory(path: str) -> str:
-    """Where one service's driven adapters live, for prose that has to point at them."""
+def persistence_directory(path: str) -> str:
+    """Where one service's driven adapters live, for prose that has to point at them.
+
+    One answer for both rungs: the event store's adapters and the state repository's sit side by side under
+    `adapters/driven/`. The member was `event_store_directory` until the rung became a question."""
     return f"{path}/src/main/java/com/example/<package>/adapters/driven/"
 
 
@@ -153,7 +156,7 @@ FAMILY: dict[protocol.Member[Any], object] = {
     # has Docker create the mount point on the host, owned by root, and the next host-side `./mvnw` then
     # fails with a permission error nowhere near its cause.
     protocol.COMPOSE_CACHES: ("/root/.m2",),
-    protocol.EVENT_STORE_DIRECTORY: event_store_directory,
+    protocol.PERSISTENCE_DIRECTORY: persistence_directory,
     # No formatter, and `None` is the answer: `make verify` checks the style through Checkstyle, and the
     # family contributes no `format` line.
     protocol.FORMATTER: None,
