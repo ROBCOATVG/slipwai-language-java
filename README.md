@@ -11,3 +11,11 @@ SQLite and Postgres adapters pass one `RepositoryContract`; the Postgres one com
 a single statement over the application's `DataSource`, and `V1__states.sql` is its schema. The shared rows are
 `slipwai_language_java/java_state.py`; each framework adds its own datasource wiring and the integration test that
 needs its application context.
+
+## The seed door
+
+On the event rung with Postgres, `make seed-<service> FILE=<json>` runs `seed/SeedMain` (`exec:java@seed`): it
+appends the events a slice's `try-it.json` gives through the event-store port, as the system actor
+`systems/seed-door`, skipping any already on the stream by a hash of stream, type and data, and exits 2 with no
+`DATABASE_URL`. It is a command, not the application, so it opens one connection and appends through
+`SeedTransactions` rather than the framework's transaction manager.

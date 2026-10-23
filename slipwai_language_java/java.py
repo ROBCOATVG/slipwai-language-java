@@ -41,6 +41,17 @@ TEMPLATE_ARTIFACT = "delivery-starter-service"
 #: Where the two ports sit in Maven's layout: under the application layer, which owns them.
 JAVA_PORTS = "src/main/java/com/example/deliverystarter/application/ports"
 
+# The seed door, which both frameworks take into their event-rung `postgres` row: `make seed-<service> FILE=<json>`
+# appends the events a slice's `try-it.json` gives, through the event store, with a deterministic identity so a
+# replay records nothing twice. Under the durable store because it needs one, and framework-free — it is a
+# command that exits rather than the application, so it brings its own one-connection unit of work
+# (`SeedTransactions`) instead of the framework's.
+SEED_DOOR = {
+    "src/main/java/com/example/deliverystarter/seed/SeedMain.java": "../java/seed_main.java",
+    "src/main/java/com/example/deliverystarter/seed/SeedTransactions.java": "../java/seed_transactions.java",
+    "src/test/java/com/example/deliverystarter/seed/SeedTest.java": "../java/tests/seed_test.java",
+}
+
 
 def rename_java_sources(project_name: str, service: App, files: dict[str, str]) -> dict[str, str]:
     """Move one service's files under this project's own package, contents and path alike.

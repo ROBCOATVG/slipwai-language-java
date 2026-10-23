@@ -81,6 +81,10 @@ TOOLING: Tooling = {
     # Surefire and never compiles a database into the gate. Invoked as goals rather than through
     # `verify`, so this target runs the integration suite and only that.
     "integration": f"{MAVEN} test-compile failsafe:integration-test failsafe:verify",
+    # The seed door: the Makefile's `seed-<service> FILE=<json>` target hands the file through. `exec:java@seed`
+    # is the pom's second execution of the plugin `migrate` runs, naming `SeedMain`; the path is made absolute
+    # because the recipe runs in the service's directory and the file was named from the repository's.
+    "seed": f"{MAVEN} -DskipTests compile exec:java@seed -Dexec.args=$(abspath $(FILE))",
     "ci_image": "maven:3.9.16-eclipse-temurin-25-noble",
     "ci_install": MAVEN_READY,
     "container_setup": MAVEN_CONTAINER_SETUP,
