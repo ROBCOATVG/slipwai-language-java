@@ -10,7 +10,8 @@ import org.flywaydb.core.api.output.MigrateResult;
  *
  * <pre>
  * make migrate
- * cd apps/service &amp;&amp; DATABASE_URL=postgres://app:app@localhost:5433/app ./mvnw -DskipTests compile exec:java
+ * cd apps/service
+ * DATABASE_URL=postgres://app:app@localhost:5433/app ./mvnw -DskipTests compile exec:java
  * </pre>
  *
  * <p>This class does not implement a migration runner, and that distinction matters. Flyway does all of it:

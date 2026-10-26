@@ -40,7 +40,8 @@ import org.jspecify.annotations.Nullable;
  *
  * <pre>
  * make seed-service FILE=given.json
- * cd apps/service &amp;&amp; DATABASE_URL=postgres://app:app@localhost:5433/app \
+ * cd apps/service
+ * DATABASE_URL=postgres://app:app@localhost:5433/app \
  *     ./mvnw -B -q -DskipTests compile exec:java@seed -Dexec.args=$PWD/given.json
  * </pre>
  *
